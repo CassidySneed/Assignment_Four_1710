@@ -12,6 +12,9 @@ from geopy.geocoders import Nominatim
 ## SETUP
 ################################################################################
 
+
+
+
 app = Flask(__name__)
 
 # Get the API key from the '.env' file
@@ -45,12 +48,16 @@ def results():
     """Displays results for current weather conditions."""
     # TODO: Use 'request.args' to retrieve the city & units from the query
     # parameters.
-    city = ''
-    units = ''
+    city = request.args.get("city")
+    units = request.args.get("units")
 
     params = {
         # TODO: Enter query parameters here for the 'appid' (your api key),
+        'appid' : {API_KEY},
         # the city, and the units (metric or imperial).
+        'q': {city}, 
+        'units': {units} 
+
         # See the documentation here: https://openweathermap.org/current
 
     }
@@ -68,13 +75,13 @@ def results():
     # function.
     context = {
         'date': datetime.now(),
-        'city': '',
-        'description': '',
-        'temp': '',
-        'humidity': '',
-        'wind_speed': '',
-        'sunrise': '',
-        'sunset': '',
+        'city': result_json['name'],
+        'description': result_json['weather'][0]['description'],
+        'temp': result_json ['main']['temp'],
+        'humidity': result_json ['main']['humidity'],
+        'wind_speed': result_json ['wind']['speed'], 
+        'sunrise': datetime.fromtimestamp(result_json['sys']['sunrise']),
+        'sunset': datetime.fromtimestamp(result_json['sys']['sunset']),
         'units_letter': get_letter_for_units(units)
     }
 
